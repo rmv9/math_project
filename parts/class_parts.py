@@ -36,8 +36,9 @@ class MainExercise:
 
 class FirstTypeExercise(MainExercise):
     """
-    The first exercise-type class.
-    It's prepare the parameters and solution.
+    The first exercise-type class
+    It's prepare the logic and solution
+    Math multiply
     Tuple with 4 numbers (int) needed.
     """
 
