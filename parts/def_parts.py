@@ -1,4 +1,4 @@
-"""SubFunctions and tools."""
+"""Functions and tools."""
 
 
 def choose_plural(amount: int, word: tuple):
@@ -28,7 +28,7 @@ def exercise_text(exemple, goods):
         f'{exemple.person_2} купил в '
         f'{plural(exemple.y, ('раз', 'раза', 'раз'))} больше '
         f'{goods[-1]} \n'
-        f'Саколько всего {exemple.person_2} купил {goods[-1]}?\n'
+        f'Саколько всего {goods[-1]} купил {exemple.person_2}?\n'
         )
 
     return result_text
@@ -43,11 +43,13 @@ def get_answer(exemple, goods):
         )
 
 
-def get_goods_list():
+def get_goods():
     """Get goods name."""
-    word_1 = ('машина', 'машины', 'машин')
-    word_2 = ('корабль', 'корабля', 'кораблей')
-    word_3 = ('грузовик', 'грузовика', 'грузовиков')
-    word_4 = ('самолет', 'самолета', 'самолетов')
+    words_array = [
+        ('машина', 'машины', 'машин'),
+        ('корабль', 'корабля', 'кораблей'),
+        ('грузовик', 'грузовика', 'грузовиков'),
+        ('самолет', 'самолета', 'самолетов')
+    ]
 
-    return [word_1, word_2, word_3, word_4]
+    return words_array
