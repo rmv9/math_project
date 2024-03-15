@@ -35,7 +35,7 @@ def exercise_text(exercise, goods: tuple[str, str, str]) -> str:
     """Prepare text to display.
 
     Args:
-        exercise (FirstTypeExercise) : Object, exemplar.
+        exercise (MainExercise) : Object, exemplar.
         goods (tuple) : Tuple with words.
 
     Returns:
@@ -43,34 +43,32 @@ def exercise_text(exercise, goods: tuple[str, str, str]) -> str:
 
     Seealso:
         sample of tuple : ('Врач', 'врача', 'врачей')
-        sample of exercise : FirstTypeExercise(3, 9, 5, 9)
+        sample of exercise : MainExercise(3, 9, 5, 9)
         sample of result_text :
             Коля купил ... машин
-            Вася купил в ... раз больше машины
-            Сколько всего машин купил Вася?
+            Вася купил в ... раз больше машин
     """
     plural = choose_plural
 
-    result_text = (
-        f'{exercise.person_1} купил {plural(exercise.x, goods)}\n'
-        f'{exercise.person_2} купил в '
-        f'{plural(exercise.y, ('раз', 'раза', 'раз'))} больше '
-        f'{goods[-1]} \n'
-        f'Сколько всего {goods[-1]} купил {exercise.person_2}?\n'
-        )
+    main_text = (
+            f'{exercise.person_1} купил {plural(exercise.x, goods)}\n'
+            f'{exercise.person_2} купил в '
+            f'{plural(exercise.y, ('раз', 'раза', 'раз'))} больше '
+            f'{goods[-1]} \n'
+            )
 
-    return result_text
+    return main_text
 
 
 def get_answer(exercise, goods: tuple[str, str, str]):
     """Get answer to the last exercise.
 
     Args:
-        exercise (FirstTypeExercise) : Object, exemplar.
+        exercise (MainExercise) : Object, exemplar.
         goods (tuple) : Tuple with words.
 
     Seealso:
-        sample of exercise : FirstTypeExercise(3, 9, 5, 9)
+        sample of exercise : MainExercise(3, 9, 5, 9)
     """
     plural = choose_plural
 
@@ -79,7 +77,32 @@ def get_answer(exercise, goods: tuple[str, str, str]):
         )
 
 
-def get_goods():
+def get_question(exercise, goods: tuple[str, str, str], level: int):
+    """Return text-quest for the exercise.
+
+    Args:
+        exercise (MainExercise) : Object, exemplar.
+        level (int) : Level of the exercise.
+        goods (tuple) : Tuple with words.
+
+    Seealso:
+        sample of exercise : MainExercise(3, 9, 5, 9)
+    """
+    match level:
+        case 1:
+            return (
+                f'Сколько {goods[-1]} купил {exercise.person_2}\n'
+                f'TEST: {exercise.answer}'
+                )
+        case 2:
+            return (
+                f'Сколько всего {goods[-1]} купили {exercise.person_1} и '
+                f'{exercise.person_2}\n'
+                f'TEST: {exercise.answer}'
+                )
+
+
+def get_goods() -> list[tuple]:
     """Get goods name."""
     words_array = [
         ('машина', 'машины', 'машин'),
@@ -91,24 +114,28 @@ def get_goods():
     return words_array
 
 
-def do_exercise() -> int:
-    """Start and finish one exercise."""
+def exe(exercise, level) -> int:
+    """Start and finish one exercise.
+
+    Args:
+        exercise (MainExercise) : Object, exemplar.
+    """
     NUMS_SET: tuple[int, int, int, int] = (3, 9, 4, 9)
 
-    exe = cl.FirstTypeExercise(NUMS_SET)
-    shuff = choice(func.get_goods())
+    exe = exercise(NUMS_SET)
+    shuff: tuple[str, str, str] = choice(func.get_goods())
 
-    print(func.exercise_text(exe, shuff), end="\n\n")
+    print(func.exercise_text(exe, shuff))
 
     while True:
-        print(
-            f'Сколько {shuff[-1]} купил {exe.person_2}\n'
-            f'TEST: {exe.answer}'
-            )
+
+        print(get_question(exe, shuff, level))
+
         if (int(input())) == exe.answer:
             print("\nВерно!")
             print(func.get_answer(exe, shuff), end="\n\n")
             return 1
+
         print("\nНеверно!\n")
 
 
@@ -117,13 +144,21 @@ def main() -> None:
     WORDS = ('задача', 'задачи', 'задач')
     exe_amount: int = int(input('Сколько задач хотите решить?\n'))
     level: int = int(input('Уровень сложности?\n1-легко\n2-средне\n'))
+    points = 0
 
     match level:
         case 1:
-            result = [func.do_exercise() for _ in range(exe_amount)]
+            res = [
+                func.exe(cl.EasyExercise, level) for _ in range(exe_amount)
+                ]
+            points = sum(res)
         case 2:
-            pass
+            res = [
+                func.exe(cl.MediumExercise, level) for _ in range(exe_amount)
+                ]
+            points = sum(res) * 2
         case _:
-            pass 
+            pass
 
-    print(f'Решено: {choose_plural(sum(result), (WORDS))}')
+    print(f'Решено {choose_plural(sum(res), (WORDS))}\n'
+          f'Получено {choose_plural(points, ('балл', 'балла', 'баллов'))}')
